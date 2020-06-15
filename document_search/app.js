@@ -58,7 +58,6 @@ exports.lambdaHandler = async (event, context) => {
 	API_KEY = process.env.INTERNAL_API_KEY;
 
 	let path = event.path;
-	let method = event.httpMethod;
 	try {
 		switch (path) {
 			case "/search":
@@ -102,13 +101,13 @@ async function GetConfigDocument() {
 }
 
 async function UpdateConfigDocument(SearchConfig) {
-	if (!SearchConfig.apikey || SearchConfig.apikey != API_KEY) {
+	if (!SearchConfig.apikey || SearchConfig.apikey !== API_KEY) {
 		return BuildResponse(401, "You may not update the config");
 	}
 	if (!SearchConfig.configs) {
 		return BuildResponse(400, "Missing List of Index Configurations");
 	}
-	for (var index of SearchConfig.configs) {
+	for (let index of SearchConfig.configs) {
 		let schemaCheck = v.validate(index, SearchConfigSchema);
 		if (!isValidIndexName(index.name)) {
 			return BuildResponse(400, "Invalid Index Name. Names must be one-word and lowercase:  " + index.name);
@@ -117,7 +116,7 @@ async function UpdateConfigDocument(SearchConfig) {
 		if (schemaCheck["errors"] && schemaCheck.errors.length > 0) {
 			console.log("Cannot Upload Document, Search config invalid!");
 			let listOfMessages = [];
-			for (var err of schemaCheck.errors) {
+			for (let err of schemaCheck.errors) {
 				listOfMessages.push(err.stack);
 			}
 			return BuildResponse(400, "Invalid Search Index Schema: " + listOfMessages);
@@ -137,7 +136,7 @@ async function UpdateConfigDocument(SearchConfig) {
 
 async function UploadArticle(document) {
 	//add to S3 Bucket
-	var params = {
+	let params = {
 		Bucket: BUCKET_NAME,
 		Key: "articles/" + Date.now() + ".json",
 		Body: JSON.stringify(document)
@@ -166,14 +165,14 @@ async function SearchForDocument(query, numValues = 25, indexName) {
 		let listOfShards = await AWSHelper.listObjects(BUCKET_NAME, "indexes/" + indexName + "/");
 		console.log("Received List of Shards...");
 		let listOfDocumentPromises = [];
-		for (var documentName of listOfShards) {
+		for (let documentName of listOfShards) {
 			listOfDocumentPromises.push(AWSHelper.getJSONFile(BUCKET_NAME, documentName));
 		}
 
 		try {
 			let allIndexes = await Promise.all(listOfDocumentPromises);
 			console.log("Got all Indexes...");
-			for (var index of allIndexes) {
+			for (let index of allIndexes) {
 				if (index != null) {
 					SearchResults = SearchResults.concat(GetSearchResults(index, query, numValues));
 				} else {
@@ -225,17 +224,15 @@ function BuildResponse(statusCode, responseBody, shouldStringify = false) {
 		body = JSON.stringify({ msg: responseBody });
 	}
 
-	let response = {
+	return {
 		statusCode,
 		body
 	};
-
-	return response;
 }
 
 function isValidIndexName(str) {
 	if (str) {
-		var re = /^[a-z-]+$/g;
+		let re = /^[a-z-]+$/g;
 		return re.test(str);
 	}
 
