@@ -17,12 +17,12 @@ exports.lambdaHandler = async (event, context) => {
 	}
 	console.log("Got articles list ...");
 	let listOfDocumentPromises = [];
-	for (var documentName of listOfDocuments) {
+	for (let documentName of listOfDocuments) {
 		listOfDocumentPromises.push(AWSHelper.getJSONFile(BUCKET_NAME, documentName, true));
 	}
 
 	let PromiseResults = await Promise.all(listOfDocumentPromises);
-	for (var result of PromiseResults) {
+	for (let result of PromiseResults) {
 		if (result != null) {
 			let isArray = Array.isArray(result);
 			if (isArray) {

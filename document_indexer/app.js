@@ -27,12 +27,12 @@ exports.lambdaHandler = async (event, context) => {
 	let listOfDocuments = await AWSHelper.listObjects(BUCKET_NAME, "articles/");
 	console.log("Got articles list ...");
 	let listOfDocumentPromises = [];
-	for (var documentName of listOfDocuments) {
+	for (let documentName of listOfDocuments) {
 		listOfDocumentPromises.push(AWSHelper.getJSONFile(BUCKET_NAME, documentName));
 	}
 
 	let PromiseResults = await Promise.all(listOfDocumentPromises);
-	for (var result of PromiseResults) {
+	for (let result of PromiseResults) {
 		if (result != null) {
 			let isArray = Array.isArray(result);
 			if (isArray) {
@@ -45,15 +45,15 @@ exports.lambdaHandler = async (event, context) => {
 
 	let IndexUploadPromiseArray = [];
 	//make indexes and upload them
-	for (var config of IndexConfig.configs) {
+	for (let config of IndexConfig.configs) {
 		let ShardSize = config.shards || 1000;
 		let shardedArray = ShardArray(AllArticles, ShardSize);
 
 		let indexCount = 1;
-		for (var articles of shardedArray) {
+		for (let articles of shardedArray) {
 			//build the index up for each shard and upload new index
-			var index = lunr(function() {
-				for (var field of config.fields) {
+			let index = lunr(function() {
+				for (let field of config.fields) {
 					this.field(field);
 				}
 
@@ -87,7 +87,7 @@ exports.lambdaHandler = async (event, context) => {
 };
 
 function ShardArray(allitems, chunk_size) {
-	var arrays = [];
+	let arrays = [];
 
 	let StartIndex = 0;
 	while (StartIndex <= allitems.length) {
