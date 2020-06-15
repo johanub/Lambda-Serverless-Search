@@ -1,5 +1,5 @@
 {
-	"name": "hello_world",
+	"name": "document_search",
 	"version": "1.0.0",
 	"description": "document free text search for serverless applications",
 	"main": "app.js",

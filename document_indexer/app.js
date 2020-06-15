@@ -1,7 +1,5 @@
 const lunr = require("lunr");
-const AWS = require("aws-sdk");
 const AWSHelper = require("aws-functions");
-const s3 = new AWS.S3();
 let BUCKET_NAME, IndexConfig;
 
 exports.lambdaHandler = async (event, context) => {

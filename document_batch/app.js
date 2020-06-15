@@ -1,7 +1,6 @@
 const AWS = require("aws-sdk");
 const AWSHelper = require("aws-functions");
-const s3 = new AWS.S3();
-let BUCKET_NAME, IndexConfig;
+let BUCKET_NAME;
 
 exports.lambdaHandler = async (event, context) => {
 	BUCKET_NAME = process.env.BUCKET_NAME;
