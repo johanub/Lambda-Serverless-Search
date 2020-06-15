@@ -1,5 +1,4 @@
 const lunr = require("lunr");
-const fs = require("fs");
 const AWS = require("aws-sdk");
 const AWSHelper = require("aws-functions");
 const s3 = new AWS.S3();
